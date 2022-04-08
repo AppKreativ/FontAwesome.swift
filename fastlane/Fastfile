@@ -25,7 +25,7 @@ lane :release do |options|
   ensure_git_branch
   ensure_git_status_clean
 
-  test
+  #test
   pod_lib_lint(
     allow_warnings: true,
   )
