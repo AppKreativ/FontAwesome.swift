@@ -271,8 +271,22 @@ private class FontLoader {
 
 extension URL {
     static func fontURL(for fontName: String) -> URL? {
-        let bundle = Bundle(for: FontLoader.self)
+        // Check main bundle
+        var bundle = Bundle.main
+        if let fontURL = URL.fontURL(for: fontName, in: bundle) {
+            return fontURL
+        }
+        
+        // Check cocoaPods bundle
+        bundle = Bundle(for: FontLoader.self)
+        if let fontURL = URL.fontURL(for: fontName, in: bundle) {
+            return fontURL
+        }
 
+        return nil
+    }
+    
+    static func fontURL(for fontName: String, in bundle: Bundle) -> URL? {
         if let fontURL = bundle.url(forResource: fontName, withExtension: "otf") {
             return fontURL
         }
@@ -281,7 +295,6 @@ extension URL {
         if let fontURL = bundle.url(forResource: fontName, withExtension: "otf", subdirectory: "FontAwesome.swift.bundle") {
             return fontURL
         }
-
         return nil
     }
 }
