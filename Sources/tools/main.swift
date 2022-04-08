@@ -14,7 +14,7 @@ struct Icon: Codable {
 
 struct SVG: Codable {
     let raw: String
-    let viewBox: [String]
+    let viewBox: [UInt]
     let width: UInt
     let height: UInt
     let path: Path
@@ -67,7 +67,10 @@ guard let json = FileManager.default.contents(atPath: "FortAwesome/Font-Awesome/
     fatalError("Could not find JSON metadata file")
 }
 
+print("Metadata was found.")
+
 let icons = try JSONDecoder().decode(Icons.self, from: json)
+print("Metadata was decoded.")
 
 // Start writing FontAwesome enum
 var fontAwesomeEnum = ""
@@ -96,7 +99,7 @@ fontAwesomeEnum += """
 // THE SOFTWARE.
 
 // DO NOT EDIT! This file is auto-generated. To regenerate it, update
-// Font-Awesome submodule and run `./codegen.swift`.
+// Font-Awesome submodule and run `swift Sources/tools/main.swift`.
 
 /// An enumaration of FontAwesome icon names.
 // swiftlint:disable file_length type_body_length
@@ -214,4 +217,5 @@ fontAwesomeEnum += """
 
 """
 
-FileManager.default.createFile(atPath: "FontAwesome/Enum.swift", contents: fontAwesomeEnum.data(using: .utf8), attributes: nil)
+print("Create new enum file.")
+FileManager.default.createFile(atPath: "Sources/FontAwesome/Enum.swift", contents: fontAwesomeEnum.data(using: .utf8), attributes: nil)

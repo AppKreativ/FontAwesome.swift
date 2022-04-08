@@ -46,42 +46,54 @@ public enum FontAwesomeStyle: String {
     /// WARNING: Font Awesome Free doesn't include a Light variant. Using this with Free will fallback to Regular.
     case light
     case regular
+    case thin
+    case duotone
     case brands
 
     func fontName() -> String {
         switch self {
         case .solid:
-            return FontAwesomeConfig.usesProFonts ? "FontAwesome5Pro-Solid" : "FontAwesome5Free-Solid"
+            return FontAwesomeConfig.usesProFonts ? "FontAwesome6Pro-Solid" : "FontAwesome6Free-Solid"
         case .light:
-            return FontAwesomeConfig.usesProFonts ? "FontAwesome5Pro-Light" : "FontAwesome5Free-Regular"
+            return FontAwesomeConfig.usesProFonts ? "FontAwesome6Pro-Light" : "FontAwesome6Free-Regular"
         case .regular:
-            return FontAwesomeConfig.usesProFonts ? "FontAwesome5Pro-Regular" : "FontAwesome5Free-Regular"
+            return FontAwesomeConfig.usesProFonts ? "FontAwesome6Pro-Regular" : "FontAwesome6Free-Regular"
+        case .thin:
+            return FontAwesomeConfig.usesProFonts ? "FontAwesome6Pro-Thin" : "FontAwesome6Free-Regular"
+        case .duotone:
+            return FontAwesomeConfig.usesProFonts ? "FontAwesome6Pro-Duotone" : "FontAwesome6Free-Regular"
         case .brands:
-            return "FontAwesome5Brands-Regular"
+            return "FontAwesome6Brands-Regular"
         }
     }
 
     func fontFilename() -> String {
         switch self {
         case .solid:
-            return FontAwesomeConfig.usesProFonts ? "Font Awesome 5 Pro-Solid-900" : "Font Awesome 5 Free-Solid-900"
+            return FontAwesomeConfig.usesProFonts ? "Font Awesome 6 Pro-Solid-900" : "Font Awesome 6 Free-Solid-900"
         case .light:
-            return FontAwesomeConfig.usesProFonts ? "Font Awesome 5 Pro-Light-300" : "Font Awesome 5 Free-Regular-400"
+            return FontAwesomeConfig.usesProFonts ? "Font Awesome 6 Pro-Light-300" : "Font Awesome 6 Free-Regular-400"
         case .regular:
-            return FontAwesomeConfig.usesProFonts ? "Font Awesome 5 Pro-Regular-400" : "Font Awesome 5 Free-Regular-400"
+            return FontAwesomeConfig.usesProFonts ? "Font Awesome 6 Pro-Regular-400" : "Font Awesome 6 Free-Regular-400"
+        case .thin:
+            return FontAwesomeConfig.usesProFonts ? "Font Awesome 6 Pro-Thin-100" : "Font Awesome 6 Free-Regular-400"
+        case .duotone:
+            return FontAwesomeConfig.usesProFonts ? "Font Awesome 6 Duotone-Solid-900" : "Font Awesome 6 Free-Regular-400"
         case .brands:
-            return "Font Awesome 5 Brands-Regular-400"
+            return "Font Awesome 6 Brands-Regular-400"
         }
     }
 
     func fontFamilyName() -> String {
         switch self {
         case .brands:
-            return "Font Awesome 5 Brands"
+            return "Font Awesome 6 Brands"
         case .regular,
              .light,
+             .thin,
+             .duotone,
              .solid:
-            return FontAwesomeConfig.usesProFonts ? "Font Awesome 5 Pro" : "Font Awesome 5 Free"
+            return FontAwesomeConfig.usesProFonts ? "Font Awesome 6 Pro" : "Font Awesome 6 Free"
         }
     }
 }
@@ -221,23 +233,23 @@ public extension UIImage {
 
 public extension FontAwesome {
 
-	/// Indicator to check whether a style is supported for the font
-	///
-	/// - Parameter style: The font style. Either .solid, .regular or .brands.
-	/// - returns: A boolean which is true if the style is supported by the font
-	func isSupported(style: FontAwesomeStyle) -> Bool {
-		return self.supportedStyles.contains(style)
-	}
+    /// Indicator to check whether a style is supported for the font
+    ///
+    /// - Parameter style: The font style. Either .solid, .regular or .brands.
+    /// - returns: A boolean which is true if the style is supported by the font
+    func isSupported(style: FontAwesomeStyle) -> Bool {
+        return self.supportedStyles.contains(style)
+    }
 
-	/// List all fonts supported in a style
-	///
-	/// - Parameter style: The font style. Either .solid, .regular or .brands.
-	/// - returns: An array of FontAwesome
-	static func fontList(style: FontAwesomeStyle) -> [FontAwesome] {
-		return FontAwesome.allCases.filter({
-			$0.isSupported(style: style)
-		})
-	}
+    /// List all fonts supported in a style
+    ///
+    /// - Parameter style: The font style. Either .solid, .regular or .brands.
+    /// - returns: An array of FontAwesome
+    static func fontList(style: FontAwesomeStyle) -> [FontAwesome] {
+        return FontAwesome.allCases.filter({
+            $0.isSupported(style: style)
+        })
+    }
 }
 
 // MARK: - Private
@@ -259,24 +271,17 @@ private class FontLoader {
 
 extension URL {
     static func fontURL(for fontName: String) -> URL? {
-        
-        #if SWIFT_PACKAGE
-            if let fontURL = Bundle.module.url(forResource: fontName, withExtension: "otf") {
-                return fontURL
-            }
-        #endif
-        
         let bundle = Bundle(for: FontLoader.self)
-        
+
         if let fontURL = bundle.url(forResource: fontName, withExtension: "otf") {
             return fontURL
         }
-        
+
         // If this framework is added using CocoaPods, resources is placed under a subdirectory
         if let fontURL = bundle.url(forResource: fontName, withExtension: "otf", subdirectory: "FontAwesome.swift.bundle") {
             return fontURL
         }
-        
+
         return nil
     }
 }
